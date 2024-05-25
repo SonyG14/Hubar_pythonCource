@@ -1,82 +1,72 @@
-# Вариант 19
-# Дана целочисленная квадратная матрица. Определить:
-# 1) сумму элементов в тех строках, которые не содержат отрицательных элементов:
-# 2) минимум среди сумм элементов диагоналей, параллельных главной диагонали
+# Given an integer square matrix. Determine:
+# 1) the sum of elements in those lines that do not contain negative elements:
+# 2) the minimum of the sums of the elements of the diagonals parallel to the main diagonal
 
 def determine_properties_1(matrix):
 
     def sum_of_rows_without_negative(matrix):
+        # [section_1 section_2 optional(section_3)]
+        # [content loop condition]
+        # [i for i in range(10) if i % 2 == 0]
         sums = []
         for row in matrix:
             if not any(x < 0 for x in row):
                 sums.append(sum(row))
-        return sums
+        return [sum(row) for row in matrix if not any(x < 0 for x in row)]
 
     def diagonal_sums(matrix):
-        sums = []
-        n = len (matrix)
-        for k in range(1-n, n):
-            diagonal = [matrix[i][i + k] for i in range(max(0, -k), min(n, n - k))]
-            sums.append(sum(diagonal))
-        return sums
+        n = len(matrix)
+        # for k in range(1-n, n):
+        #     diagonal = [matrix[i][i + k] for i in range(max(0, -k), min(n, n - k))]
+        #     sums.append(sum(diagonal))
+        return [sum([matrix[i][i + k] for i in range(max(0, -k), min(n, n - k))]) for k in range(1-n, n)]
 
-    sums_no_negatives = sum_of_rows_without_negative(matrix)
-    print('\n Sum of rows without negatives:', sums_no_negatives)
+    print(f'\nSum of rows without negatives: {sum_of_rows_without_negative(matrix)}')
 
-    diagonal_sums_result = diagonal_sums(matrix)
-    print('\n Sums of diagonal parallel to main diagonal:', diagonal_sums_result)
+    print(f'\n Sums of diagonal parallel to main diagonal: {diagonal_sums(matrix)}')
 
-    min_diagonal_sum = min(diagonal_sums_result)
-    print('\n Minimum sum among sums:', min_diagonal_sum)
+    print(f'\n Minimum sum among sums: {min(diagonal_sums(matrix))}')
 
 
+# two-dimensional list that represents a matrix
 matrix = [
     [2, -4, 6, 0],
     [4, -2, 1, 5],
     [7, 0, 5, -3],
     [1, 4, 5, 3]
 ]
+
 print('\n#1')
-print('matrix:')
-for row in matrix:
-    print(row)
-print('\n')
+list(map(print, matrix))
 determine_properties_1(matrix)
 
 
-# Вариант 3
-# Дана целочисленная прямоугольная матрица. Определить:
-# 1) количество столбцов, содержащих хотя бы один нулевой элемент;
-# 2) номер строки, в которой находится самая длинная серия одинаковых элементов.
+# Given an integer rectangular matrix. Determine:
+# 1) the number of columns containing at least one zero element;
+# 2) number of the line in which there is the longest series of identical elements.
 
 def determine_properties_2(matrix):
     def count_columns_with_zeros(matrix):
-        zero_columns_count = sum(1 for j in range(len(matrix[0])) if any(matrix[i][j] == 0 for i in range(len(matrix))))
-        return zero_columns_count
+        return sum(1 for j in range(len(matrix[0])) if any(matrix[i][j] == 0 for i in range(len(matrix))))
 
     def longest_series_row(matrix):
         max_series_length = 0
         row_with_max_series = -1
-        for i, row in enumerate(matrix):
+
+        for row_index, row in enumerate(matrix):
             current_series_length = 1
+
             for j in range(1, len(row)):
-                if row[j] == row[j-1]:
-                    current_series_length += 1
-                else:
-                    if current_series_length > max_series_length:
-                        max_series_length = current_series_length
-                        row_with_max_series = i
-                    current_series_length = 1
-            if current_series_length > max_series_length:
-                max_series_length = current_series_length
-                row_with_max_series = i
+                current_series_length = current_series_length + 1 if row[j] == row[j - 1] else 1
+
+                if current_series_length > max_series_length:
+                    max_series_length, row_with_max_series = current_series_length, row_index
+
         return row_with_max_series
 
-    zero_columns = count_columns_with_zeros(matrix)
-    print('\nNumber of columns with zero elements:', zero_columns)
+    print(f'\nNumber of columns with zero elements: {count_columns_with_zeros(matrix)}')
 
-    longest_series_row_num = longest_series_row(matrix)
-    print('\nThe row number with the longest series of identical elements:', longest_series_row_num)
+    print(f'\nThe row number with the longest series of identical elements: {longest_series_row(matrix)}')
 
 
 matrix = [
@@ -88,26 +78,20 @@ matrix = [
 ]
 
 print('\n#2')
-for row in matrix:
-    print(row)
+list(map(print, matrix))
 
 determine_properties_2(matrix)
 
-#  Вариант 13
-# Осуществить циклический сдвиг элементов прямоугольной матрицы на n элементов вправо или
-# вниз (в зависимости от введенного режима), n может быть больше количества элементов в строке или столбце.
+# Cyclic shift of the elements of the rectangular matrix by n elements to the right or
+# down (depending on the entered mode), n may be more elements in a row or column.
+
 
 def cyclic_shift(matrix, n, direction='right'):
     if direction == 'right':
         for row in matrix:
-            for _ in range(n):
-                row.insert(0, row.pop())
+            row[:] = row[-n:] + row[:-n]
     elif direction == 'down':
-        for _ in range(n):
-            matrix.insert(0, matrix.pop())
-    else:
-        print("Unsupported shift direction.")
-        return None
+        matrix[:] = matrix[-n:] + matrix[:-n]
 
 
 matrix = [
@@ -118,15 +102,12 @@ matrix = [
 ]
 
 print('\n#3')
-print("Initial matrix:")
-for row in matrix:
-    print(row)
+list(map(print, matrix))
 
-direction = input("Enter the direction ('right' or 'down'): ")
-n = int(input("Enter the number of positions to shift: "))
+direction = input('Enter the direction (right or down):')
+n = int(input('Enter the number of positions to shift:'))
 
 cyclic_shift(matrix, n, direction)
 
-print("\nThe matrix after a cyclic shift by {} positions in the direction {}:".format(n, direction))
-for row in matrix:
-    print(row)
+print(f'\nThe matrix after a cyclic shift by {n} positions in the direction {direction}:')
+list(map(print, matrix))
