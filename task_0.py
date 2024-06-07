@@ -8,10 +8,11 @@ def determine_properties_1(matrix):
         # [section_1 section_2 optional(section_3)]
         # [content loop condition]
         # [i for i in range(10) if i % 2 == 0]
-        sums = []
-        for row in matrix:
-            if not any(x < 0 for x in row):
-                sums.append(sum(row))
+
+        # sums = []
+        # for row in matrix:
+        #     if not any(x < 0 for x in row):
+        #         sums.append(sum(row))
         return [sum(row) for row in matrix if not any(x < 0 for x in row)]
 
     def diagonal_sums(matrix):
@@ -30,7 +31,7 @@ def determine_properties_1(matrix):
 
 # two-dimensional list that represents a matrix
 matrix = [
-    [2, -4, 6, 0],
+    [2, 4, 6, 7],
     [4, -2, 1, 5],
     [7, 0, 5, -3],
     [1, 4, 5, 3]
@@ -86,12 +87,14 @@ determine_properties_2(matrix)
 # down (depending on the entered mode), n may be more elements in a row or column.
 
 
-def cyclic_shift(matrix, n, direction='right'):
+def cyclic_shift(matrix, n, direction):
     if direction == 'right':
         for row in matrix:
             row[:] = row[-n:] + row[:-n]
     elif direction == 'down':
         matrix[:] = matrix[-n:] + matrix[:-n]
+    else:
+        print('wrong direction')
 
 
 matrix = [
